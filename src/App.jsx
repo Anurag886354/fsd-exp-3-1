@@ -1,0 +1,86 @@
+import { useState } from "react";
+
+export default function App() {
+  const [books, setBooks] = useState([
+    { id: 1, title: "The Great Gatsby", author: "S. Scott Fitzgerald" },
+    { id: 2, title: "To Kill a Mockingbird", author: "Harper Lee" },
+    { id: 3, title: "The Great Gatsby", author: "F. Scott Fitzgerald" }
+  ]);
+
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [search, setSearch] = useState("");
+
+  const addBook = () => {
+    if (!title.trim() || !author.trim()) return;
+
+    const newBook = {
+      id: Date.now(),
+      title,
+      author
+    };
+
+    setBooks([...books, newBook]);
+    setTitle("");
+    setAuthor("");
+  };
+
+  const removeBook = (id) => {
+    setBooks(books.filter((book) => book.id !== id));
+  };
+
+  const filteredBooks = books.filter(
+    (book) =>
+      book.title.toLowerCase().includes(search.toLowerCase()) ||
+      book.author.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="container">
+      <h1>Library Management System</h1>
+
+      <div className="card">
+        <input
+          type="text"
+          placeholder="Search books..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="search"
+        />
+
+        <div className="form-row">
+          <input
+            type="text"
+            placeholder="Book Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+
+          <input
+            type="text"
+            placeholder="Author"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+          />
+
+          <button className="add-btn" onClick={addBook}>
+            Add Book
+          </button>
+        </div>
+      </div>
+
+      {filteredBooks.map((book) => (
+        <div key={book.id} className="book-card">
+          <div>
+            <h2>{book.title}</h2>
+            <p>by {book.author}</p>
+          </div>
+
+          <button className="remove-btn" onClick={() => removeBook(book.id)}>
+            Remove
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
